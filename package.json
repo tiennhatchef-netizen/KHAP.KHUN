@@ -1,0 +1,14 @@
+{
+  "name": "khapkhun-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "build": "echo \"no build step\"",
+    "test": "echo \"No tests\" && exit 0"
+  },
+  "dependencies": {}
+}
