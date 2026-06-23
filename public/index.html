@@ -2255,12 +2255,13 @@ function applyRoleTabs(){
 async function enterApp(){
   document.getElementById('login-overlay').classList.add('hidden');
   document.getElementById('app-root').classList.remove('hidden');
-  const roleLabel = ROLE_LABELS[currentUser.role] || currentUser.role;
+  const roleLabel = currentUser.is_superadmin
+    ? '🔐 Super Admin'
+    : (ROLE_LABELS[currentUser.role] || currentUser.role);
   document.getElementById('userChip').textContent = currentUser.name + ' · ' + roleLabel;
   connectSocket();
   await init();
   applyRoleTabs();
-  // Áp dụng tên app nếu đã lưu
   applyAppName();
 }
 
@@ -2322,7 +2323,6 @@ const ROLE_BADGE = {
 async function renderNguoiDung(){
   const tbody = document.getElementById('nguoidung-tbody');
   if(!tbody) return;
-  // Cập nhật ô tên app
   applyAppName();
   tbody.innerHTML = '<tr><td colspan="5" class="txt-gray fs11" style="padding:16px;text-align:center">⏳ Đang tải danh sách...</td></tr>';
   try{
@@ -2331,19 +2331,35 @@ async function renderNguoiDung(){
       tbody.innerHTML = '<tr><td colspan="5" class="txt-gray fs11" style="padding:16px;text-align:center">Chưa có tài khoản nào</td></tr>';
       return;
     }
-    tbody.innerHTML = list.map(u=>`
-      <tr>
-        <td class="fw700">${escHtml(u.username)}</td>
-        <td>${escHtml(u.name)}</td>
-        <td>${ROLE_BADGE[u.role] || `<span class="badge b-gray">${u.role}</span>`}</td>
-        <td class="fs11 txt-gray">${new Date(u.created_at).toLocaleDateString('vi')}</td>
-        <td class="txt-right" style="white-space:nowrap">
-          ${u.id===currentUser.id
-            ? '<span class="fs11 txt-gray">(bạn)</span>'
-            : `<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id}, '${escHtml(u.name)}')">Xoá</button>`
-          }
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = list.map(u=>{
+      const isSelf     = u.id === currentUser.id;
+      const isSuper    = u.is_superadmin;
+      const iAmSuper   = currentUser.is_superadmin;
+
+      // Badge vai trò
+      let roleBadge = ROLE_BADGE[u.role] || `<span class="badge b-gray">${u.role}</span>`;
+      if(isSuper) roleBadge = '<span class="badge" style="background:#1a237e;color:#fff;letter-spacing:.5px">🔐 Super Admin</span>';
+
+      // Nút hành động
+      let actions = '';
+      if(isSelf){
+        actions = '<span class="fs11 txt-gray">(bạn)</span>';
+      } else if(isSuper){
+        // Không ai được xoá hoặc sửa superadmin
+        actions = '<span class="fs11 txt-gray" title="Tài khoản được bảo vệ">🔒 Được bảo vệ</span>';
+      } else {
+        actions = `<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id}, '${escHtml(u.name)}')">Xoá</button>`;
+      }
+
+      return `
+        <tr ${isSuper ? 'style="background:rgba(26,35,126,.04)"' : ''}>
+          <td class="fw700">${escHtml(u.username)}</td>
+          <td>${escHtml(u.name)}</td>
+          <td>${roleBadge}</td>
+          <td class="fs11 txt-gray">${new Date(u.created_at).toLocaleDateString('vi')}</td>
+          <td class="txt-right" style="white-space:nowrap">${actions}</td>
+        </tr>`;
+    }).join('');
   }catch(e){
     tbody.innerHTML = `<tr><td colspan="5" class="txt-red fs11" style="padding:12px">${e.message}</td></tr>`;
   }
