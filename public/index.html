@@ -770,13 +770,24 @@ tr:hover .sticky-col{background:#F7F4F0}
       <label>Năm:</label>
       <input type="number" id="tk-nam" value="2026" style="width:80px" onchange="renderTonKho()">
     </div>
-    <input type="text" id="tk-search" placeholder="🔍 Tìm..." style="max-width:200px" oninput="renderTonKho()">
-    <button class="btn btn-outline btn-sm" onclick="autoCalcTon()">⚡ Tự Tính Tồn</button>
+    <input type="text" id="tk-search" placeholder="🔍 Tìm NVL..." style="max-width:180px" oninput="renderTonKho()">
+    <button class="btn btn-outline btn-sm" onclick="autoCalcTon()" title="Làm mới tính toán từ dữ liệu nhập hàng & bán hàng">⚡ Làm Mới</button>
+    <button class="btn btn-teal btn-sm" onclick="chotThang()" title="Sao chép Tồn Cuối tháng này → Tồn Đầu tháng sau">✅ Chốt Tháng</button>
     <div class="metrics" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0;flex:1">
       <div class="metric"><div class="metric-label">Tổng Giá Trị Tồn</div><div class="metric-val fs11 mono" id="tk-total-val">0đ</div></div>
-      <div class="metric m-bad"><div class="metric-label">Tồn Thấp</div><div class="metric-val fs11" id="tk-low-count">0 mục</div></div>
+      <div class="metric m-bad"><div class="metric-label">Tồn Thấp / Hết</div><div class="metric-val fs11" id="tk-low-count">0 mục</div></div>
       <div class="metric m-good"><div class="metric-label">Tồn Đủ</div><div class="metric-val fs11" id="tk-ok-count">0 mục</div></div>
     </div>
+  </div>
+
+  <!-- Hướng dẫn nhanh -->
+  <div style="background:var(--bg2);border-left:3px solid var(--teal);padding:8px 12px;font-size:11px;margin-bottom:10px;line-height:1.7">
+    <b>📌 Cách hoạt động:</b>
+    <b>Tồn Đầu</b> = tự lấy từ Tồn Cuối tháng trước (có thể sửa tay nếu cần) &nbsp;·&nbsp;
+    <b>Nhập Tháng</b> <span style="color:var(--teal)">(🔵 tự tính)</span> = tổng từ phiếu Nhập Hàng tháng này &nbsp;·&nbsp;
+    <b>Xuất</b> = tính từ Bán Hàng &nbsp;·&nbsp;
+    <b>Tồn Cuối = Tồn Đầu + Nhập − Xuất</b><br>
+    Cuối tháng: bấm <b>✅ Chốt Tháng</b> để Tồn Cuối tháng này tự động trở thành Tồn Đầu tháng sau.
   </div>
 
   <div class="card">
@@ -788,9 +799,9 @@ tr:hover .sticky-col{background:#F7F4F0}
           <th>Nhóm</th>
           <th>ĐVT</th>
           <th>Giá Nhập</th>
-          <th>Tồn Đầu</th>
-          <th>Nhập Tháng</th>
-          <th>Xuất (Tính từ Bán)</th>
+          <th>Tồn Đầu<br><span style="font-weight:400;font-size:10px">(sửa được)</span></th>
+          <th style="color:var(--teal)">Nhập Tháng<br><span style="font-weight:400;font-size:10px">🔵 Tự tính</span></th>
+          <th>Xuất Bán</th>
           <th>Tồn Cuối</th>
           <th>Giá Trị Tồn</th>
           <th>Trạng Thái</th>
@@ -1005,9 +1016,9 @@ tr:hover .sticky-col{background:#F7F4F0}
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px 14px;font-size:11px;margin-bottom:12px;line-height:1.8">
       <b>Phân quyền tab theo vai trò:</b><br>
       ⭐ <b>Quản Lý</b> — Tất cả tab<br>
-      📋 <b>Nhân Viên</b> — Tất cả (trừ tab Người Dùng)<br>
+      👁 <b>Giám Sát</b> — Tất cả (trừ Người Dùng · Menu &amp; Công Thức · Menu Tại Chỗ)<br>
       🛎 <b>Phục Vụ</b> — Dashboard · Bán Hàng · Menu Tại Chỗ<br>
-      👨‍🍳 <b>Bếp</b> — Dashboard · Menu & Công Thức · Menu Tại Chỗ · Hao Hụt · Hủy Hàng · Tồn Kho<br>
+      👨‍🍳 <b>Bếp</b> — Dashboard · Menu &amp; Công Thức · Menu Tại Chỗ · Hao Hụt · Hủy Hàng · Tồn Kho<br>
       💰 <b>Thu Ngân</b> — Dashboard · Bán Hàng · Báo Cáo
     </div>
     <div class="tbl-wrap">
@@ -1367,7 +1378,7 @@ tr:hover .sticky-col{background:#F7F4F0}
           <option value="phucvu">🛎 Phục Vụ — Bán Hàng + Menu tại chỗ</option>
           <option value="bep">👨‍🍳 Bếp — Menu + Kho + Hao Hụt</option>
           <option value="thungan">💰 Thu Ngân — Dashboard + Bán Hàng + Báo Cáo</option>
-          <option value="staff">📋 Nhân Viên — Tất cả (trừ Người Dùng)</option>
+          <option value="staff">👁 Giám Sát — Tất cả (trừ Người Dùng, Menu & CT, Menu TC)</option>
           <option value="admin">⭐ Quản Lý — Toàn quyền</option>
         </select>
       </div>
@@ -2214,13 +2225,13 @@ function doLogout(){
 // ─── Phân quyền tab theo vai trò ────────────────────────────────
 const ROLE_TABS = {
   admin:   ['dashboard','banhang','nvl','inventory','menu','bantaicho','chamcong','chiphi','haohut','huyhang','tonkho','baocao','dubaodoanhthu','nguoidung'],
-  staff:   ['dashboard','banhang','nvl','inventory','menu','bantaicho','chamcong','chiphi','haohut','huyhang','tonkho','baocao','dubaodoanhthu'],
+  staff:   ['dashboard','banhang','nvl','inventory','chamcong','chiphi','haohut','huyhang','tonkho','baocao','dubaodoanhthu'],
   bep:     ['dashboard','menu','bantaicho','haohut','huyhang','tonkho'],
   phucvu:  ['dashboard','banhang','bantaicho'],
   thungan: ['dashboard','banhang','baocao'],
 };
 const ROLE_LABELS = {
-  admin:'⭐ Quản Lý', staff:'📋 Nhân Viên',
+  admin:'⭐ Quản Lý', staff:'👁 Giám Sát',
   bep:'👨‍🍳 Bếp', phucvu:'🛎 Phục Vụ', thungan:'💰 Thu Ngân'
 };
 
@@ -2255,12 +2266,13 @@ function applyRoleTabs(){
 async function enterApp(){
   document.getElementById('login-overlay').classList.add('hidden');
   document.getElementById('app-root').classList.remove('hidden');
-  const roleLabel = ROLE_LABELS[currentUser.role] || currentUser.role;
+  const roleLabel = currentUser.is_superadmin
+    ? '🔐 Super Admin'
+    : (ROLE_LABELS[currentUser.role] || currentUser.role);
   document.getElementById('userChip').textContent = currentUser.name + ' · ' + roleLabel;
   connectSocket();
   await init();
   applyRoleTabs();
-  // Áp dụng tên app nếu đã lưu
   applyAppName();
 }
 
@@ -2313,7 +2325,7 @@ function saveAppName(){
 // ═══════════════════════════════════════════════════════════════
 const ROLE_BADGE = {
   admin:   '<span class="badge b-blue">⭐ Quản Lý</span>',
-  staff:   '<span class="badge b-gray">📋 Nhân Viên</span>',
+  staff:   '<span class="badge b-gray">👁 Giám Sát</span>',
   bep:     '<span class="badge" style="background:#fff3e0;color:#b85c00">👨‍🍳 Bếp</span>',
   phucvu:  '<span class="badge" style="background:#e8f5e9;color:#1b5e20">🛎 Phục Vụ</span>',
   thungan: '<span class="badge" style="background:#f3e5f5;color:#6a1b9a">💰 Thu Ngân</span>',
@@ -2322,7 +2334,6 @@ const ROLE_BADGE = {
 async function renderNguoiDung(){
   const tbody = document.getElementById('nguoidung-tbody');
   if(!tbody) return;
-  // Cập nhật ô tên app
   applyAppName();
   tbody.innerHTML = '<tr><td colspan="5" class="txt-gray fs11" style="padding:16px;text-align:center">⏳ Đang tải danh sách...</td></tr>';
   try{
@@ -2331,19 +2342,35 @@ async function renderNguoiDung(){
       tbody.innerHTML = '<tr><td colspan="5" class="txt-gray fs11" style="padding:16px;text-align:center">Chưa có tài khoản nào</td></tr>';
       return;
     }
-    tbody.innerHTML = list.map(u=>`
-      <tr>
-        <td class="fw700">${escHtml(u.username)}</td>
-        <td>${escHtml(u.name)}</td>
-        <td>${ROLE_BADGE[u.role] || `<span class="badge b-gray">${u.role}</span>`}</td>
-        <td class="fs11 txt-gray">${new Date(u.created_at).toLocaleDateString('vi')}</td>
-        <td class="txt-right" style="white-space:nowrap">
-          ${u.id===currentUser.id
-            ? '<span class="fs11 txt-gray">(bạn)</span>'
-            : `<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id}, '${escHtml(u.name)}')">Xoá</button>`
-          }
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = list.map(u=>{
+      const isSelf     = u.id === currentUser.id;
+      const isSuper    = u.is_superadmin;
+      const iAmSuper   = currentUser.is_superadmin;
+
+      // Badge vai trò
+      let roleBadge = ROLE_BADGE[u.role] || `<span class="badge b-gray">${u.role}</span>`;
+      if(isSuper) roleBadge = '<span class="badge" style="background:#1a237e;color:#fff;letter-spacing:.5px">🔐 Super Admin</span>';
+
+      // Nút hành động
+      let actions = '';
+      if(isSelf){
+        actions = '<span class="fs11 txt-gray">(bạn)</span>';
+      } else if(isSuper){
+        // Không ai được xoá hoặc sửa superadmin
+        actions = '<span class="fs11 txt-gray" title="Tài khoản được bảo vệ">🔒 Được bảo vệ</span>';
+      } else {
+        actions = `<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id}, '${escHtml(u.name)}')">Xoá</button>`;
+      }
+
+      return `
+        <tr ${isSuper ? 'style="background:rgba(26,35,126,.04)"' : ''}>
+          <td class="fw700">${escHtml(u.username)}</td>
+          <td>${escHtml(u.name)}</td>
+          <td>${roleBadge}</td>
+          <td class="fs11 txt-gray">${new Date(u.created_at).toLocaleDateString('vi')}</td>
+          <td class="txt-right" style="white-space:nowrap">${actions}</td>
+        </tr>`;
+    }).join('');
   }catch(e){
     tbody.innerHTML = `<tr><td colspan="5" class="txt-red fs11" style="padding:12px">${e.message}</td></tr>`;
   }
@@ -2494,6 +2521,22 @@ async function loadData(){
     for(const combo of (S.combos||[])){
       const oldKey='c'+combo.id, newKey='c_'+combo.id;
       if(bh[oldKey] && !bh[newKey]){ bh[newKey]=bh[oldKey]; delete bh[oldKey]; }
+    }
+  }
+  // ── Khởi tạo ton_data nếu chưa có ────────────────────
+  if(!S.ton_data) S.ton_data = {};
+  // ── Migrate: NVL cũ có ton_dau/nhap_thang flat → chuyển sang ton_data theo tháng hiện tại
+  {
+    const curMk = mkey(S.thang, S.nam);
+    if(!S.ton_data[curMk]) S.ton_data[curMk] = {};
+    for(const n of S.nvl){
+      // Chỉ migrate nếu ton_data tháng này chưa có giá trị cho NVL này
+      if(n.ton_dau !== undefined && S.ton_data[curMk][n.ten] === undefined){
+        S.ton_data[curMk][n.ten] = parseFloat(n.ton_dau) || 0;
+      }
+      // Dọn dẹp: xoá các field cũ khỏi NVL object để không gây nhầm lẫn
+      delete n.ton_dau;
+      delete n.nhap_thang;
     }
   }
   // ── Auto-check 14-day rule on load ─────────────────
@@ -2766,12 +2809,20 @@ function renderDashboard(){
       <div class="pbar-wrap"><div class="pbar ${c.cls}" style="width:${c.val/maxCP*100}%"></div></div>
     </div>`).join('') || '<div class="txt-gray fs11">Chưa có dữ liệu</div>';
 
-  // Tồn kho cảnh báo
-  const lowItems = S.nvl.filter(n=>(n.ton_dau||0)<2);
-  document.getElementById('db-ton-canh-bao').innerHTML = lowItems.length===0
+  // Tồn kho cảnh báo — dùng _tonDauHienThi tháng hiện tại
+  function getTonHienTai(nvlTen){
+    const td  = _tonDauHienThi(nvlTen, S.thang, S.nam);
+    const mk  = mkey(S.thang, S.nam);
+    const nh  = _nhapThangMK(nvlTen, mk);
+    const xu  = _xuatThangMK(nvlTen, mk);
+    return Math.max(0, td + nh - xu);
+  }
+  const lowItems = S.nvl.filter(n => getTonHienTai(n.ten) < 2);
+  document.getElementById('db-ton-canh-bao').innerHTML = lowItems.length === 0
     ? '<div class="alert alert-success fs11">✓ Tồn kho ổn định</div>'
-    : lowItems.slice(0,5).map(n=>`
-      <div class="alert alert-warn fs11">⚠️ ${n.ten}: Tồn = ${n.ton_dau||0} ${n.dvt}</div>`).join('');
+    : lowItems.slice(0, 5).map(n =>
+        `<div class="alert alert-warn fs11">⚠️ ${n.ten}: Tồn ≈ ${fmtQty(getTonHienTai(n.ten))} ${n.dvt}</div>`
+      ).join('');
 
   document.getElementById('db-ghichu').value = S.ghi_chu||'';
   document.getElementById('db-ghichu').onchange = e=>{S.ghi_chu=e.target.value;saveData()};
@@ -3020,11 +3071,15 @@ function renderNVL(){
   for(const grp of sortedGroups){
     const items=grouped[grp];
     const color=NVL_NHOM_COLOR[grp]||'#333';
+    const nvlMk = mkey(S.thang, S.nam);
     let rowsHtml='';
     for(const n of items){
       const hh=S.hao_hut[n.ten]||0;
       const hhCls=hh>=60?'b-red':hh>30?'b-amber':hh>15?'b-gray':'b-green';
-      const ton=n.ton_dau||0;
+      const tonDauN = _tonDauHienThi(n.ten, S.thang, S.nam);
+      const nhapN   = _nhapThangMK(n.ten, nvlMk);
+      const xuatN   = _xuatThangMK(n.ten, nvlMk);
+      const ton = Math.max(0, tonDauN + nhapN - xuatN);
       const tonStatus=ton<0.5?'<span class="badge b-red">Hết</span>':ton<2?'<span class="badge b-amber">Thấp</span>':'<span class="badge b-green">Đủ</span>';
       const idx=S.nvl.indexOf(n);
       // Giá chuẩn vs giá nhập hiện tại
@@ -3059,7 +3114,12 @@ function renderNVL(){
         </td>
       </tr>`;
     }
-    const totGia=items.reduce((a,n)=>a+(n.ton_dau||0)*n.gia,0);
+    const totGia=items.reduce((a,n)=>{
+      const td2=_tonDauHienThi(n.ten,S.thang,S.nam);
+      const nh2=_nhapThangMK(n.ten,nvlMk);
+      const xu2=_xuatThangMK(n.ten,nvlMk);
+      return a+Math.max(0,td2+nh2-xu2)*n.gia;
+    },0);
     const warnCount=items.filter(n=>{
       const gc=n.gia_chuan||n.gia; return gc>0&&(n.gia-gc)/gc>0.05;
     }).length;
@@ -3096,12 +3156,17 @@ function addNVL(){
   if(!ten){alert('Vui lòng nhập tên NVL');return;}
   const gia=parseFloat(document.getElementById('nvl-new-gia').value)||0;
   const newId = Math.max(0,...S.nvl.map(n=>n.id))+1;
+  const tonBanDau = parseFloat(document.getElementById('nvl-new-ton').value)||0;
   S.nvl.push({id:newId, ten, dvt:document.getElementById('nvl-new-dvt').value||'kg',
     gia, gia_chuan: gia,
     gia_chuan_ngay: new Date().toISOString().slice(0,10),
     gia_chuan_auto: false,
-    nhom:document.getElementById('nvl-new-nhom').value,
-    ton_dau:parseFloat(document.getElementById('nvl-new-ton').value)||0});
+    nhom:document.getElementById('nvl-new-nhom').value});
+  // Lưu tồn đầu vào ton_data theo tháng hiện tại
+  if(!S.ton_data) S.ton_data = {};
+  const newNvlMk = mkey(S.thang, S.nam);
+  if(!S.ton_data[newNvlMk]) S.ton_data[newNvlMk] = {};
+  if(tonBanDau > 0) S.ton_data[newNvlMk][ten] = tonBanDau;
   const hh=parseFloat(document.getElementById('nvl-new-hh').value)||5;
   S.hao_hut[ten]=hh;
   closeModal('modal-nvl-add');
@@ -3156,8 +3221,12 @@ function delNVL(idx){
   S.nvl.splice(idx,1); saveData(); renderNVL();
 }
 function exportNVL(){
-  let csv='STT,Tên NVL,Nhóm,ĐVT,Giá Nhập,Hao Hụt%,Tồn\n';
-  S.nvl.forEach((n,i)=>csv+=`${i+1},"${n.ten}","${n.nhom}",${n.dvt},${n.gia},${S.hao_hut[n.ten]||0},${n.ton_dau||0}\n`);
+  const expMk = mkey(S.thang, S.nam);
+  let csv='STT,Tên NVL,Nhóm,ĐVT,Giá Nhập,Hao Hụt%,Tồn Tháng '+S.thang+'/'+S.nam+'\n';
+  S.nvl.forEach((n,i)=>{
+    const ton = (S.ton_data?.[expMk]?.[n.ten]) ?? 0;
+    csv+=`${i+1},"${n.ten}","${n.nhom}",${n.dvt},${n.gia},${S.hao_hut[n.ten]||0},${ton}\n`;
+  });
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
   a.download='NVL_KhapKhun.csv'; a.click();
@@ -4032,64 +4101,199 @@ function setHaoHut(ten,val){
 // ═══════════════════════════════════════════════════════════════
 // TỒN KHO
 // ═══════════════════════════════════════════════════════════════
-function renderTonKho(){
-  const thang=S.thang;
-  const nam=S.nam;
-  if(document.getElementById('tk-thang')) document.getElementById('tk-thang').value=thang;
-  if(document.getElementById('tk-nam')) document.getElementById('tk-nam').value=nam;
-  const mk=mkey(S.thang,S.nam);
-  const q=(document.getElementById('tk-search')?.value||'').toLowerCase();
+// ═══════════════════════════════════════════════════════════════
+// TỒN KHO — Logic tính toán (không đệ quy)
+// ═══════════════════════════════════════════════════════════════
 
-  const filtered=S.nvl.filter(n=>!q||n.ten.toLowerCase().includes(q));
-  let totalVal=0, lowCount=0, okCount=0;
+// Tồn đầu đã được chốt/sửa tay trong ton_data — trả về 0 nếu chưa có
+function _storedTonDau(nvlTen, mk){
+  return (S.ton_data?.[mk]?.[nvlTen]) ?? undefined;
+}
 
-  // Calc xuất theo bán hàng
-  function calcXuat(nvlTen){
-    let xuatTotal=0;
-    for(const mon of S.menu){
-      const sl=getTotalBan(mk,mon.id);
-      const nl=mon.nguyen_lieu.find(x=>x.ten===nvlTen);
-      if(nl) xuatTotal+=sl*(nl.dinh_luong/1000)*(1+(S.hao_hut[nvlTen]||0)/100);
-    }
-    return xuatTotal;
+// Tổng nhập một tháng từ phiếu nhập hàng (S.inventory)
+function _nhapThangMK(nvlTen, mk){
+  return (S.inventory?.[mk] || [])
+    .filter(e => e.ten === nvlTen)
+    .reduce((s, e) => s + (parseFloat(e.sl) || 0), 0);
+}
+
+// Tổng xuất một tháng tính từ bán hàng + hao hụt
+function _xuatThangMK(nvlTen, mk){
+  let total = 0;
+  for(const mon of (S.menu || [])){
+    const sl = getTotalBan(mk, mon.id);
+    const nl = (mon.nguyen_lieu || []).find(x => x.ten === nvlTen);
+    if(nl && sl > 0) total += sl * (nl.dinh_luong / 1000) * (1 + (S.hao_hut[nvlTen] || 0) / 100);
   }
+  // Xuất từ menu tại chỗ
+  for(const mon of (S.menu_tc || [])){
+    const sl = getTotalBan(mk, 'tc_' + mon.id);
+    const nl = (mon.nguyen_lieu || []).find(x => x.ten === nvlTen);
+    if(nl && sl > 0) total += sl * (nl.dinh_luong / 1000) * (1 + (S.hao_hut[nvlTen] || 0) / 100);
+  }
+  return total;
+}
 
-  document.getElementById('tk-tbody').innerHTML=filtered.map((n,i)=>{
-    const tonDau=n.ton_dau||0;
-    const nhapThang=n.nhap_thang||0;
-    const xuat=calcXuat(n.ten);
-    const tonCuoi=Math.max(0,tonDau+nhapThang-xuat);
-    const tonVal=tonCuoi*n.gia;
-    totalVal+=tonVal;
-    const status=tonCuoi<1?'<span class="badge b-red">HẾT</span>':
-      tonCuoi<3?'<span class="badge b-amber">THẤP</span>':'<span class="badge b-green">ĐỦ</span>';
-    tonCuoi<3?lowCount++:okCount++;
-    const idx=S.nvl.indexOf(n);
+// Tồn cuối = tonDau + nhap - xuat cho một tháng cụ thể (KHÔNG đệ quy)
+function _tonCuoiMK(nvlTen, mk){
+  const td = (_storedTonDau(nvlTen, mk)) ?? 0;
+  const nh = _nhapThangMK(nvlTen, mk);
+  const xu = _xuatThangMK(nvlTen, mk);
+  return Math.max(0, td + nh - xu);
+}
+
+// Tồn đầu hiển thị: lấy từ ton_data nếu đã chốt, ngược lại tính tồn cuối tháng trước (chỉ 1 bước)
+function _tonDauHienThi(nvlTen, thang, nam){
+  const mk     = mkey(thang, nam);
+  const stored = _storedTonDau(nvlTen, mk);
+  if(stored !== undefined) return stored;
+  // Chưa chốt → tự tính từ tồn cuối tháng trước (đi lui tối đa 1 tháng)
+  const prevMk     = getPrevMK(thang, nam);
+  const prevStored = _storedTonDau(nvlTen, prevMk);
+  const prevTonDau = prevStored !== undefined ? prevStored : 0;
+  const prevNhap   = _nhapThangMK(nvlTen, prevMk);
+  const prevXuat   = _xuatThangMK(nvlTen, prevMk);
+  return Math.max(0, prevTonDau + prevNhap - prevXuat);
+}
+
+// ── Trả về month-key của tháng trước ────────────────────────
+function getPrevMK(thang, nam){
+  thang = parseInt(thang); nam = parseInt(nam);
+  if(thang === 1) return mkey(12, nam - 1);
+  return mkey(thang - 1, nam);
+}
+
+// ── Trả về month-key của tháng sau ──────────────────────────
+function getNextMK(thang, nam){
+  thang = parseInt(thang); nam = parseInt(nam);
+  if(thang === 12) return mkey(1, nam + 1);
+  return mkey(thang + 1, nam);
+}
+
+// ── Sửa tay tồn đầu cho 1 NVL trong 1 tháng cụ thể ─────────
+function setTonDauThang(nvlTen, mk, val){
+  if(!S.ton_data) S.ton_data = {};
+  if(!S.ton_data[mk]) S.ton_data[mk] = {};
+  S.ton_data[mk][nvlTen] = Math.max(0, parseFloat(val) || 0);
+  // saveData sẽ được gọi khi user bấm nút Lưu hoặc tự lưu
+}
+
+// ── Render bảng tồn kho ──────────────────────────────────────
+function renderTonKho(){
+  const thang = parseInt(document.getElementById('tk-thang')?.value || S.thang);
+  const nam   = parseInt(document.getElementById('tk-nam')?.value   || S.nam);
+  // Sync selectors
+  if(document.getElementById('tk-thang')) document.getElementById('tk-thang').value = thang;
+  if(document.getElementById('tk-nam'))   document.getElementById('tk-nam').value   = nam;
+
+  const mk = mkey(thang, nam);
+  const q  = (document.getElementById('tk-search')?.value || '').toLowerCase();
+
+  if(!S.ton_data) S.ton_data = {};
+  if(!S.ton_data[mk]) S.ton_data[mk] = {};
+
+  const filtered = S.nvl.filter(n => !q || n.ten.toLowerCase().includes(q));
+  let totalVal = 0, lowCount = 0, okCount = 0;
+
+  document.getElementById('tk-tbody').innerHTML = filtered.map((n, i) => {
+    const tonDau    = _tonDauHienThi(n.ten, thang, nam);
+    const nhapThang = _nhapThangMK(n.ten, mk);
+    const xuat      = _xuatThangMK(n.ten, mk);
+    const tonCuoi   = Math.max(0, tonDau + nhapThang - xuat);
+    const tonVal    = tonCuoi * n.gia;
+    totalVal += tonVal;
+
+    const isLow = tonCuoi < 1;
+    const isMid = tonCuoi >= 1 && tonCuoi < 3;
+    const statusBadge = isLow
+      ? '<span class="badge b-red">HẾT</span>'
+      : isMid
+        ? '<span class="badge b-amber">THẤP</span>'
+        : '<span class="badge b-green">ĐỦ</span>';
+    isLow || isMid ? lowCount++ : okCount++;
+
+    // Hiển thị nguồn tồn đầu
+    const hasStored = _storedTonDau(n.ten, mk) !== undefined;
+    const tonDauTitle = hasStored ? 'Đã chốt/sửa tay' : `Tính từ tồn cuối tháng ${getPrevMK(thang,nam)}`;
+    const tonDauStyle = hasStored ? 'border-color:var(--teal);background:#f0fdfa' : '';
+
     return `<tr>
-      <td>${i+1}</td>
+      <td>${i + 1}</td>
       <td class="sticky-col fw700">${n.ten}</td>
       <td>${nhomTag(n.nhom)}</td>
       <td class="mono">${n.dvt}</td>
       <td class="mono">${fmt(n.gia)}</td>
-      <td><input class="input-inline" type="number" min="0" value="${tonDau}"
-        onchange="setTonDau(${idx},this.value)" style="width:64px"></td>
-      <td><input class="input-inline" type="number" min="0" value="${nhapThang}"
-        onchange="setNhapThang(${idx},this.value)" style="width:64px"></td>
+      <td>
+        <input class="input-inline" type="number" min="0" step="0.001"
+          value="${+tonDau.toFixed(3)}"
+          title="${tonDauTitle}"
+          style="width:75px;${tonDauStyle}"
+          onchange="setTonDauThang('${escHtml(n.ten)}','${mk}',this.value);renderTonKho()">
+      </td>
+      <td class="mono txt-blue fw700" title="Tự tính từ phiếu Nhập Hàng — không cần nhập tay">
+        ${fmtQty(nhapThang)}
+      </td>
       <td class="mono txt-amber">${fmtQty(xuat)}</td>
-      <td class="mono fw700 ${tonCuoi<2?'txt-red':'txt-green'}">${fmtQty(tonCuoi)}</td>
+      <td class="mono fw700 ${isLow ? 'txt-red' : isMid ? 'txt-amber' : 'txt-green'}">
+        ${fmtQty(tonCuoi)}
+      </td>
       <td class="mono">${fmt(tonVal)}</td>
-      <td>${status}</td>
+      <td>${statusBadge}</td>
     </tr>`;
   }).join('');
 
-  document.getElementById('tk-total-val').textContent=fmt(totalVal);
-  document.getElementById('tk-low-count').textContent=lowCount+' mục';
-  document.getElementById('tk-ok-count').textContent=okCount+' mục';
+  document.getElementById('tk-total-val').textContent = fmt(totalVal);
+  document.getElementById('tk-low-count').textContent = lowCount + ' mục';
+  document.getElementById('tk-ok-count').textContent  = okCount  + ' mục';
 }
 
-function setTonDau(idx,val){S.nvl[idx].ton_dau=parseFloat(val)||0;}
-function setNhapThang(idx,val){S.nvl[idx].nhap_thang=parseFloat(val)||0;}
-function autoCalcTon(){alert('Hệ thống đã tự tính xuất kho từ dữ liệu bán hàng!');renderTonKho();}
+// ── Chốt Tháng: tính tồn cuối → gán làm tồn đầu tháng sau ──
+function chotThang(){
+  const thang  = parseInt(document.getElementById('tk-thang')?.value || S.thang);
+  const nam    = parseInt(document.getElementById('tk-nam')?.value   || S.nam);
+  const mk     = mkey(thang, nam);
+  const nextMk = getNextMK(thang, nam);
+  const [nt, nn] = nextMk.split('-').map(Number);
+
+  if(!confirm(
+    `Chốt tháng ${thang}/${nam}?\n` +
+    `→ Tồn cuối tháng ${thang}/${nam} sẽ trở thành Tồn Đầu tháng ${nt}/${nn}.\n\n` +
+    `Lưu ý: sẽ ghi đè Tồn Đầu tháng ${nt}/${nn} nếu đã có.`
+  )) return;
+
+  if(!S.ton_data) S.ton_data = {};
+  if(!S.ton_data[mk])     S.ton_data[mk]     = {};
+  if(!S.ton_data[nextMk]) S.ton_data[nextMk] = {};
+
+  let count = 0;
+  for(const n of S.nvl){
+    const tonDau  = (_storedTonDau(n.ten, mk)) ?? _tonDauHienThi(n.ten, thang, nam);
+    const nhap    = _nhapThangMK(n.ten, mk);
+    const xuat    = _xuatThangMK(n.ten, mk);
+    const tonCuoi = Math.max(0, tonDau + nhap - xuat);
+    S.ton_data[nextMk][n.ten] = parseFloat(tonCuoi.toFixed(4));
+    count++;
+  }
+
+  saveData();
+  alert(`✅ Đã chốt! Tồn đầu tháng ${nt}/${nn} được cập nhật cho ${count} NVL.`);
+  if(document.getElementById('tk-thang')) document.getElementById('tk-thang').value = nt;
+  if(document.getElementById('tk-nam'))   document.getElementById('tk-nam').value   = nn;
+  renderTonKho();
+}
+
+// ── Làm mới + lưu ───────────────────────────────────────────
+function autoCalcTon(){
+  saveData();
+  renderTonKho();
+}
+
+// ── Backward-compat stubs ────────────────────────────────────
+function setTonDau(idx, val){
+  const n = S.nvl[idx]; if(!n) return;
+  setTonDauThang(n.ten, mkey(S.thang, S.nam), val);
+}
+function setNhapThang(){ /* deprecated */ }
 
 // ═══════════════════════════════════════════════════════════════
 // BÁO CÁO
